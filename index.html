@@ -6,133 +6,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VINNXMATE — Online Chess</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
- --bg:#090e13;--panel:#111a22;--panel2:#17232d;
- --border:#293944;--green:#a5e65a;--text:#e7edf0;
- --muted:#83939c;--red:#e15b5b;
-}
-body{
- background:var(--bg);color:var(--text);
- font-family:Arial,sans-serif;min-height:100vh;
-}
-header{
- height:68px;padding:0 22px;background:#0d151c;
- border-bottom:1px solid var(--border);
- display:flex;align-items:center;justify-content:space-between;
-}
+:root{--bg:#090e13;--panel:#111a22;--panel2:#17232d;--border:#293944;--green:#a5e65a;--text:#e7edf0;--muted:#83939c}
+body{background:var(--bg);color:var(--text);font-family:Arial,sans-serif;min-height:100vh}
+header{height:68px;padding:0 22px;background:#0d151c;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .logo{font-size:20px;font-weight:900;letter-spacing:2px}
 .logo span{color:var(--green)}
 .online{font-size:10px;color:var(--green);letter-spacing:2px}
 main{max-width:1000px;margin:auto;padding:25px 15px}
 .hidden{display:none!important}
-.card{
- background:var(--panel);border:1px solid var(--border);
- border-radius:8px;padding:18px;margin-bottom:14px;
-}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:14px}
 h2{font-size:18px;margin-bottom:9px}
 h3{font-size:13px;margin-bottom:12px;color:#c9d5da}
 p{font-size:13px;color:var(--muted);line-height:1.6}
-button{
- border:0;border-radius:5px;padding:13px 17px;
- background:var(--green);color:#10190a;
- font-weight:900;font-size:12px;letter-spacing:1px;
- cursor:pointer;
-}
+button{border:0;border-radius:5px;padding:13px 17px;background:var(--green);color:#10190a;font-weight:900;font-size:12px;letter-spacing:1px;cursor:pointer}
 button:disabled{opacity:.4;cursor:not-allowed}
 button.secondary{background:#263641;color:var(--text)}
 button.danger{background:#9f4141;color:white}
 button.full{width:100%}
-input,textarea{
- width:100%;padding:12px;background:#090f14;
- color:white;border:1px solid var(--border);
- border-radius:5px;margin:10px 0;font:13px Arial;
- outline:none;
-}
-textarea{height:100px;resize:vertical}
-input:focus,textarea:focus{border-color:var(--green)}
-#status{color:var(--green);margin-top:12px;font-size:12px}
-.hero{
- min-height:65vh;display:flex;align-items:center;
- justify-content:center;text-align:center;
-}
+textarea{width:100%;padding:12px;background:#090f14;color:white;border:1px solid var(--border);border-radius:5px;margin:10px 0;font:13px Arial;outline:none;height:100px;resize:vertical}
+textarea:focus{border-color:var(--green)}
+.hero{min-height:65vh;display:flex;align-items:center;justify-content:center;text-align:center}
 .hero-inner{width:100%;max-width:420px}
 .hero-tag{font-size:10px;color:var(--green);letter-spacing:4px;margin-bottom:18px}
 .hero h1{font-size:36px;letter-spacing:2px;margin-bottom:12px}
 .hero h1 span{color:var(--green)}
 .hero p{margin:0 auto 25px;max-width:300px}
-.create-btn{
- width:100%;padding:18px;font-size:14px;
- box-shadow:0 0 25px #a5e65a18;
-}
+.create-btn{width:100%;padding:18px;font-size:14px;box-shadow:0 0 25px #a5e65a18}
 .small-note{font-size:10px;color:#61717b;margin-top:15px}
-.room-code{
- padding:13px;background:#090f14;border:1px dashed #43534c;
- color:var(--green);font-size:11px;overflow-wrap:anywhere;
- margin:12px 0;border-radius:5px;
-}
+.room-code{padding:13px;background:#090f14;border:1px dashed #43534c;color:var(--green);font-size:11px;overflow-wrap:anywhere;margin:12px 0;border-radius:5px}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 #game{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:15px}
-#board{
- display:grid;grid-template-columns:repeat(8,1fr);
- width:100%;aspect-ratio:1;border:3px solid #34434b;
- overflow:hidden;border-radius:4px;
-}
-.square{
- aspect-ratio:1;display:flex;align-items:center;
- justify-content:center;position:relative;cursor:pointer;
- user-select:none;
-}
+#board{display:grid;grid-template-columns:repeat(8,1fr);width:100%;aspect-ratio:1;border:3px solid #34434b;overflow:hidden;border-radius:4px}
+.square{aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;user-select:none}
 .light{background:#d9dfc9}
 .dark{background:#718b70}
 .square.selected{background:#c4bd55}
-.square.target:after{
- content:"";width:23%;height:23%;border-radius:50%;
- background:#243e2c;opacity:.8;
-}
-.square.capture:after{
- content:"";position:absolute;inset:3px;
- border:5px solid #314d36;border-radius:50%;opacity:.8;
-}
-.piece{
- font-family:"DejaVu Sans","Segoe UI Symbol",serif;
- font-size:clamp(25px,8vw,58px);line-height:1;
- z-index:1;pointer-events:none;
-}
+.square.target:after{content:"";width:23%;height:23%;border-radius:50%;background:#243e2c;opacity:.8}
+.square.capture:after{content:"";position:absolute;inset:3px;border:5px solid #314d36;border-radius:50%;opacity:.8}
+.piece{font-family:"DejaVu Sans","Segoe UI Symbol",serif;font-size:clamp(25px,8vw,58px);line-height:1;z-index:1;pointer-events:none}
 .white-piece{color:#fff;text-shadow:0 2px 3px #222}
 .black-piece{color:#171717;text-shadow:0 1px 1px white}
 .coord{position:absolute;bottom:2px;right:3px;font-size:9px;opacity:.7}
 .light .coord{color:#52654e}
 .dark .coord{color:white}
-.player{
- padding:12px;background:var(--panel2);
- border:1px solid var(--border);border-radius:5px;
- margin:9px 0;font-size:12px;
- display:flex;justify-content:space-between;
-}
+.player{padding:12px;background:var(--panel2);border:1px solid var(--border);border-radius:5px;margin:9px 0;font-size:12px;display:flex;justify-content:space-between}
 .player.active{border-color:var(--green)}
 #history{max-height:230px;overflow:auto;font-size:12px;line-height:2}
-.move{
- display:grid;grid-template-columns:35px 1fr 1fr;
- border-bottom:1px solid var(--border);padding:3px;
-}
-#toast{
- position:fixed;bottom:20px;left:50%;
- transform:translateX(-50%);background:#263641;
- padding:13px 18px;border:1px solid #43534c;
- border-radius:5px;display:none;font-size:12px;
- max-width:90%;z-index:10;
-}
-@media(max-width:700px){
- #game{grid-template-columns:1fr}
- main{padding:15px 10px}
- .hero h1{font-size:30px}
-}
+.move{display:grid;grid-template-columns:35px 1fr 1fr;border-bottom:1px solid var(--border);padding:3px}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#263641;padding:13px 18px;border:1px solid #43534c;border-radius:5px;display:none;font-size:12px;max-width:90%;z-index:10}
+@media(max-width:700px){#game{grid-template-columns:1fr}main{padding:15px 10px}.hero h1{font-size:30px}}
 </style>
 </head>
-
 <body>
 <header>
  <div class="logo">VINNX<span>MATE</span></div>
@@ -140,22 +66,17 @@ input:focus,textarea:focus{border-color:var(--green)}
 </header>
 
 <main>
-
-<!-- FIRST PAGE -->
 <section id="home" class="hero">
  <div class="hero-inner">
   <div class="hero-tag">ONLINE CHESS PLATFORM</div>
   <h1>VINNX<span>MATE</span></h1>
   <p>Create a private room and challenge your friend in a real-time chess match.</p>
-  <button class="create-btn" id="create-button" onclick="createRoom()">
-   CREATE ROOM
-  </button>
+  <button class="create-btn" id="create-button" onclick="createRoom()">CREATE ROOM</button>
   <div class="small-note">DIRECT PEER-TO-PEER CONNECTION</div>
   <p id="status"></p>
  </div>
 </section>
 
-<!-- HOST ROOM -->
 <section id="host-room" class="hidden">
  <div class="card">
   <h2>ROOM CREATED</h2>
@@ -164,7 +85,6 @@ input:focus,textarea:focus{border-color:var(--green)}
   <button class="full" onclick="copyInvite()">COPY INVITATION LINK</button>
   <p id="host-status">Waiting for your friend...</p>
  </div>
-
  <div class="card">
   <h3>FRIEND'S ANSWER LINK</h3>
   <p>Ask your friend to send back their Answer link. Paste it here.</p>
@@ -173,7 +93,6 @@ input:focus,textarea:focus{border-color:var(--green)}
  </div>
 </section>
 
-<!-- JOIN PAGE -->
 <section id="join-room" class="hidden">
  <div class="card">
   <h2>JOIN ROOM</h2>
@@ -184,7 +103,6 @@ input:focus,textarea:focus{border-color:var(--green)}
  </div>
 </section>
 
-<!-- CHESS GAME -->
 <section id="game" class="hidden">
  <div>
   <div class="card">
@@ -192,30 +110,20 @@ input:focus,textarea:focus{border-color:var(--green)}
    <p id="connection-label">Peer-to-peer connection</p>
    <p id="game-status">Waiting...</p>
   </div>
-
-  <div class="player" id="black-player">
-   <span>BLACK PLAYER</span><b id="black-label">Opponent</b>
-  </div>
-
+  <div class="player" id="black-player"><span>BLACK PLAYER</span><b id="black-label">Opponent</b></div>
   <div id="board"></div>
-
-  <div class="player" id="white-player">
-   <span>WHITE PLAYER</span><b id="white-label">You</b>
-  </div>
+  <div class="player" id="white-player"><span>WHITE PLAYER</span><b id="white-label">You</b></div>
  </div>
-
  <aside>
   <div class="card">
    <h3>YOUR COLOR</h3>
    <h2 id="my-color">WHITE</h2>
    <p id="turn-label">Waiting...</p>
   </div>
-
   <div class="card">
    <h3>MOVE HISTORY</h3>
    <div id="history">No moves yet.</div>
   </div>
-
   <div class="card">
    <h3>GAME CONTROLS</h3>
    <div class="actions">
@@ -227,9 +135,7 @@ input:focus,textarea:focus{border-color:var(--green)}
   </div>
  </aside>
 </section>
-
 </main>
-
 <div id="toast"></div>
 
 <script>
@@ -238,22 +144,14 @@ input:focus,textarea:focus{border-color:var(--green)}
 const rtcConfig={
  iceServers:[
   {urls:"stun:stun.l.google.com:19302"},
-  {urls:"stun:stun1.l.google.com:19302"}
+  {urls:"stun:stun1.l.google.com:19302"},
+  {urls:"stun:stun2.l.google.com:19302"}
  ]
 };
 
-let pc=null;
-let channel=null;
-let role=null;
-let connected=false;
-let chess=new Chess();
-let selected=null;
-let targets=[];
-let flipped=false;
-let gameFinished=false;
-let inviteLink="";
-let answerLink="";
-
+let pc=null,channel=null,role=null,connected=false;
+let chess=new Chess(),selected=null,targets=[],flipped=false,gameFinished=false;
+let inviteLink="",answerLink="";
 const $=id=>document.getElementById(id);
 
 function toast(message){
@@ -285,8 +183,7 @@ function decodeData(value){
 }
 
 function makeLink(type,sdp){
- const url=location.origin+location.pathname;
- return url+"#"+type+"="+encodeData(sdp);
+ return location.origin+location.pathname+"#"+type+"="+encodeData(sdp);
 }
 
 async function copyValue(value){
@@ -300,59 +197,41 @@ async function copyValue(value){
   area.style.opacity="0";
   document.body.appendChild(area);
   area.select();
-  let success=false;
-  try{success=document.execCommand("copy")}catch(err){}
+  let ok=false;
+  try{ok=document.execCommand("copy")}catch(err){}
   area.remove();
-  return success;
+  return ok;
  }
 }
 
-
+/* FIXED ICE GATHERING */
 function waitICE(connection){
- return new Promise((resolve,reject)=>{
+ return new Promise(resolve=>{
   if(connection.iceGatheringState==="complete"){
    resolve();
    return;
   }
-
-  const timeout=setTimeout(()=>{
-   cleanup();
-   // Gunakan kandidat yang sudah terkumpul.
-   resolve();
-  },60000);
-
-  function check(){
-   if(connection.iceGatheringState==="complete"){
-    cleanup();
-    resolve();
-   }
-  }
-
-  function cleanup(){
-   clearTimeout(timeout);
-   connection.removeEventListener(
-    "icegatheringstatechange",check
-   );
-  }
-
-  connection.addEventListener(
-   "icegatheringstatechange",check
-  );
- });
-}
-
-
-  function check(){
-   if(connection.iceGatheringState==="complete"){
-    cleanup();
-    resolve();
-   }
-  }
+  let finished=false;
+  let timeout;
 
   function cleanup(){
    clearTimeout(timeout);
    connection.removeEventListener("icegatheringstatechange",check);
   }
+  function finish(){
+   if(finished)return;
+   finished=true;
+   cleanup();
+   resolve();
+  }
+  function check(){
+   if(connection.iceGatheringState==="complete")finish();
+  }
+
+  timeout=setTimeout(()=>{
+   console.warn("ICE gathering timed out; continuing with gathered candidates.");
+   finish();
+  },60000);
 
   connection.addEventListener("icegatheringstatechange",check);
  });
@@ -360,46 +239,34 @@ function waitICE(connection){
 
 function setupConnection(){
  pc=new RTCPeerConnection(rtcConfig);
-
  pc.onconnectionstatechange=()=>{
   if(!pc)return;
   const state=pc.connectionState;
   $("connection-label").textContent="Connection: "+state;
-
   if(state==="connected"){
    connected=true;
    toast("Friend connected!");
    showGame();
   }
-
-  if(state==="failed"||state==="disconnected"){
-   toast("Connection interrupted");
-  }
+  if(state==="failed"||state==="disconnected")toast("Connection interrupted");
  };
-
  pc.oniceconnectionstatechange=()=>{
-  if(pc&&pc.iceConnectionState==="failed"){
-   toast("P2P connection failed. TURN server may be needed.");
-  }
+  if(pc&&pc.iceConnectionState==="failed")toast("P2P failed. A TURN server may be needed.");
  };
-
  pc.ondatachannel=event=>setupChannel(event.channel);
 }
 
 function setupChannel(ch){
  channel=ch;
-
  channel.onopen=()=>{
   connected=true;
   toast("Online match ready");
   showGame();
  };
-
  channel.onclose=()=>{
   connected=false;
   toast("Friend disconnected");
  };
-
  channel.onmessage=event=>{
   try{receiveMessage(JSON.parse(event.data))}
   catch(e){console.error(e)}
@@ -415,15 +282,13 @@ function send(data){
  return true;
 }
 
-// CREATE ROOM
+/* CREATE ROOM */
 async function createRoom(){
  try{
   $("create-button").disabled=true;
   $("create-button").textContent="CREATING ROOM...";
-
   role="white";
   setupConnection();
-
   channel=pc.createDataChannel("vinnxmate-chess");
   setupChannel(channel);
 
@@ -432,16 +297,13 @@ async function createRoom(){
   await waitICE(pc);
 
   inviteLink=makeLink("join",pc.localDescription.sdp);
-
   $("invite-preview").textContent=inviteLink;
   showPage("host-room");
 
   const copied=await copyValue(inviteLink);
-
   $("host-status").textContent=copied
    ?"Invitation link copied. Send it to your friend."
    :"Room created. Copy the invitation link below.";
-
   toast(copied?"INVITATION LINK COPIED":"Room created");
  }catch(e){
   toast("Error: "+e.message);
@@ -450,33 +312,26 @@ async function createRoom(){
  }
 }
 
-// JOIN ROOM AUTOMATICALLY
+/* JOIN ROOM */
 async function joinRoom(sdp){
  try{
   showPage("join-room");
   $("join-status").textContent="Connecting to host...";
-
   role="black";
   setupConnection();
 
-  await pc.setRemoteDescription({
-   type:"offer",
-   sdp:sdp
-  });
-
+  await pc.setRemoteDescription({type:"offer",sdp});
   const answer=await pc.createAnswer();
   await pc.setLocalDescription(answer);
   await waitICE(pc);
 
   answerLink=makeLink("answer",pc.localDescription.sdp);
   $("answer-output").value=answerLink;
-
   const copied=await copyValue(answerLink);
 
   $("join-status").textContent=copied
    ?"Answer link copied. Send it back to the host."
    :"Answer created. Copy the Answer link below.";
-
   toast(copied?"ANSWER LINK COPIED":"Answer ready");
  }catch(e){
   $("join-status").textContent="Error: "+e.message;
@@ -485,44 +340,28 @@ async function joinRoom(sdp){
 
 async function copyInvite(){
  if(!inviteLink)return toast("Invitation not ready");
- const ok=await copyValue(inviteLink);
- toast(ok?"Invitation copied":"Copy failed. Select the link manually.");
+ toast(await copyValue(inviteLink)?"Invitation copied":"Copy failed");
 }
 
 async function copyAnswerLink(){
  if(!answerLink)return toast("Answer not ready");
- const ok=await copyValue(answerLink);
- toast(ok?"Answer link copied":"Copy failed. Select the link manually.");
+ toast(await copyValue(answerLink)?"Answer link copied":"Copy failed");
 }
 
-// HOST CONNECTS USING ANSWER LINK
+/* HOST APPLY ANSWER */
 async function connectAnswer(){
  try{
-  if(!pc||role!=="white"){
-   toast("Create a room first");
-   return;
-  }
-
-  let raw=$("answer-link").value.trim();
+  if(!pc||role!=="white")return toast("Create a room first");
+  const raw=$("answer-link").value.trim();
   if(!raw)return toast("Paste Answer link first");
 
   let sdp=raw;
-
   if(raw.includes("#answer=")){
-   const encoded=raw.split("#answer=")[1].split("&")[0];
-   sdp=decodeData(encoded);
+   sdp=decodeData(raw.split("#answer=")[1].split("&")[0]);
   }
+  if(!sdp.includes("v=0"))return toast("Invalid Answer link");
 
-  if(!sdp.includes("v=0")){
-   toast("Invalid Answer link");
-   return;
-  }
-
-  await pc.setRemoteDescription({
-   type:"answer",
-   sdp:sdp
-  });
-
+  await pc.setRemoteDescription({type:"answer",sdp});
   $("host-status").textContent="Answer received. Connecting...";
   toast("Connecting to friend");
  }catch(e){
@@ -530,7 +369,7 @@ async function connectAnswer(){
  }
 }
 
-// CHESS BOARD
+/* CHESS */
 const glyph={
  wK:"♔",wQ:"♕",wR:"♖",wB:"♗",wN:"♘",wP:"♙",
  bK:"♚",bQ:"♛",bR:"♜",bB:"♝",bN:"♞",bP:"♟"
@@ -551,14 +390,10 @@ function render(){
 
  for(let row=0;row<8;row++){
   for(let col=0;col<8;col++){
-   const r=flipped?7-row:row;
-   const c=flipped?7-col:col;
-   const square="abcdefgh"[c]+(8-r);
-   const piece=matrix[r][c];
-
+   const r=flipped?7-row:row,c=flipped?7-col:col;
+   const square="abcdefgh"[c]+(8-r),piece=matrix[r][c];
    const div=document.createElement("div");
    div.className="square "+((r+c)%2===0?"light":"dark");
-
    if(selected===square)div.classList.add("selected");
    if(targets.includes(square))div.classList.add(piece?"capture":"target");
 
@@ -568,243 +403,150 @@ function render(){
     span.textContent=glyph[piece.color+piece.type.toUpperCase()];
     div.appendChild(span);
    }
-
    if(col===0){
     const coord=document.createElement("span");
-    coord.className="coord";
-    coord.textContent=8-r;
-    div.appendChild(coord);
+    coord.className="coord";coord.textContent=8-r;div.appendChild(coord);
    }
-
    if(row===7){
     const coord=document.createElement("span");
-    coord.className="coord";
-    coord.textContent="abcdefgh"[c];
-    div.appendChild(coord);
+    coord.className="coord";coord.textContent="abcdefgh"[c];div.appendChild(coord);
    }
-
    div.onclick=()=>clickSquare(square);
    board.appendChild(div);
   }
  }
-
  updateStatus();
 }
 
 function clickSquare(square){
  if(!connected||gameFinished)return;
-
  const myTurn=role==="white"?"w":"b";
-
- if(chess.turn()!==myTurn){
-  toast("Wait for your turn");
-  return;
- }
-
+ if(chess.turn()!==myTurn)return toast("Wait for your turn");
  const piece=chess.get(square);
 
- if(selected&&targets.includes(square)){
-  makeMove(selected,square);
-  return;
- }
-
+ if(selected&&targets.includes(square)){makeMove(selected,square);return}
  if(piece&&piece.color===myTurn){
   selected=square;
   targets=chess.moves({square,verbose:true}).map(m=>m.to);
-  render();
-  return;
+  render();return;
  }
-
- selected=null;
- targets=[];
- render();
+ selected=null;targets=[];render();
 }
 
 function makeMove(from,to){
- const piece=chess.get(from);
- const move={from,to};
-
+ const piece=chess.get(from),move={from,to};
  if(piece&&piece.type==="p"&&(to[1]==="8"||to[1]==="1")){
   const choice=prompt("Promote: q, r, b, n","q");
   if(choice===null)return;
-
-  if(!["q","r","b","n"].includes(choice.toLowerCase())){
-   toast("Invalid promotion");
-   return;
-  }
+  if(!["q","r","b","n"].includes(choice.toLowerCase()))return toast("Invalid promotion");
   move.promotion=choice.toLowerCase();
  }
-
  const result=chess.move(move);
  if(!result)return toast("Illegal move");
-
- selected=null;
- targets=[];
-
- if(!send({type:"move",san:result.san})){
-  chess.undo();
-  render();
-  return;
- }
-
- checkFinished();
- render();
+ selected=null;targets=[];
+ if(!send({type:"move",san:result.san})){chess.undo();render();return}
+ checkFinished();render();
 }
 
 function receiveMessage(data){
  if(!data||typeof data.type!=="string")return;
-
  if(data.type==="move"){
   if(gameFinished)return;
-
   const opponentTurn=role==="white"?"b":"w";
   if(chess.turn()!==opponentTurn)return;
-
   const move=chess.move(data.san);
   if(!move)return;
-
-  selected=null;
-  targets=[];
-  checkFinished();
-  render();
+  selected=null;targets=[];checkFinished();render();
  }
-
  if(data.type==="resign"){
-  gameFinished=true;
-  toast("Opponent resigned. You win!");
-  updateStatus();
+  gameFinished=true;toast("Opponent resigned. You win!");updateStatus();
  }
-
  if(data.type==="restart"){
-  chess.reset();
-  gameFinished=false;
-  selected=null;
-  targets=[];
-  render();
-  toast("New game started");
+  chess.reset();gameFinished=false;selected=null;targets=[];render();toast("New game started");
  }
 }
 
 function checkFinished(){
  if(chess.game_over()){
   gameFinished=true;
-  if(chess.in_checkmate())toast("Checkmate!");
-  else toast("Game drawn");
+  toast(chess.in_checkmate()?"Checkmate!":"Game drawn");
  }
 }
 
 function updateStatus(){
- const status=$("game-status");
- const turn=$("turn-label");
-
+ const status=$("game-status"),turn=$("turn-label");
  if(gameFinished){
   status.textContent=chess.in_checkmate()?"Checkmate!":"Game finished";
   turn.textContent="Match ended";
  }else{
   const current=chess.turn()==="w"?"White":"Black";
   status.textContent=current+" to move"+(chess.in_check()?" — CHECK!":"");
-  turn.textContent=chess.turn()===(role==="white"?"w":"b")
-   ?"Your turn":"Opponent's turn";
+  turn.textContent=chess.turn()===(role==="white"?"w":"b")?"Your turn":"Opponent's turn";
  }
 
  $("white-player").classList.toggle("active",!gameFinished&&chess.turn()==="w");
  $("black-player").classList.toggle("active",!gameFinished&&chess.turn()==="b");
 
- const history=chess.history();
- const container=$("history");
+ const history=chess.history(),container=$("history");
  container.innerHTML="";
-
- if(!history.length){
-  container.textContent="No moves yet.";
- }else{
+ if(!history.length){container.textContent="No moves yet."}
+ else{
   for(let i=0;i<history.length;i+=2){
-   const row=document.createElement("div");
-   row.className="move";
-
+   const row=document.createElement("div");row.className="move";
    [String(i/2+1)+".",history[i]||"",history[i+1]||""].forEach(value=>{
-    const span=document.createElement("span");
-    span.textContent=value;
-    row.appendChild(span);
+    const span=document.createElement("span");span.textContent=value;row.appendChild(span);
    });
-
    container.appendChild(row);
   }
  }
 }
 
-function flipBoard(){
- flipped=!flipped;
- render();
-}
+function flipBoard(){flipped=!flipped;render()}
 
 function resign(){
  if(!connected||gameFinished)return;
  if(!confirm("Are you sure you want to resign?"))return;
- send({type:"resign"});
- gameFinished=true;
- updateStatus();
+ send({type:"resign"});gameFinished=true;updateStatus();
 }
 
 function restartGame(){
  if(!connected)return;
  if(role!=="white")return toast("Only the host can restart");
  if(!confirm("Restart the match?"))return;
-
- chess.reset();
- gameFinished=false;
- selected=null;
- targets=[];
- send({type:"restart"});
- render();
+ chess.reset();gameFinished=false;selected=null;targets=[];
+ send({type:"restart"});render();
 }
 
 function leaveGame(){
  if(channel)channel.close();
  if(pc)pc.close();
-
- pc=null;
- channel=null;
- connected=false;
- role=null;
- chess.reset();
- selected=null;
- targets=[];
- gameFinished=false;
- flipped=false;
- inviteLink="";
- answerLink="";
-
- $("answer-link").value="";
- $("answer-output").value="";
+ pc=null;channel=null;connected=false;role=null;
+ chess.reset();selected=null;targets=[];gameFinished=false;flipped=false;
+ inviteLink="";answerLink="";
+ $("answer-link").value="";$("answer-output").value="";
  $("create-button").disabled=false;
  $("create-button").textContent="CREATE ROOM";
-
  showPage("home");
 }
 
-// DETECT INVITATION OR ANSWER
+/* READ INVITATION */
 async function checkRoomLink(){
  const hash=location.hash;
-
  if(hash.startsWith("#join=")){
   try{
    const sdp=decodeData(hash.slice(6));
    history.replaceState(null,"",location.pathname);
    await joinRoom(sdp);
   }catch(e){
-   showPage("home");
-   toast("Invalid invitation link");
+   showPage("home");toast("Invalid invitation link");
   }
  }else if(hash.startsWith("#answer=")){
-  // Answer links are pasted into the host's existing room.
   showPage("home");
-  toast("Paste this Answer link into the host room.");
+  toast("Open the host room and paste this Answer link.");
  }
 }
 
-window.addEventListener("beforeunload",()=>{
- if(pc)pc.close();
-});
+window.addEventListener("beforeunload",()=>{if(pc)pc.close()});
 
 if(typeof Chess==="undefined"){
  $("status").textContent="Chess library failed to load. Check your internet.";

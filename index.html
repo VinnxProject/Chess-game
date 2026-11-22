@@ -3,144 +3,160 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VINNXMATE — Online Chess</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VINNXMATE Chess</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#090e13;--panel:#111a22;--panel2:#17232d;--border:#293944;--green:#a5e65a;--text:#e7edf0;--muted:#83939c}
-body{background:var(--bg);color:var(--text);font-family:Arial,sans-serif;min-height:100vh}
-header{height:68px;padding:0 22px;background:#0d151c;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.logo{font-size:20px;font-weight:900;letter-spacing:2px}
-.logo span{color:var(--green)}
-.online{font-size:10px;color:var(--green);letter-spacing:2px}
-main{max-width:1000px;margin:auto;padding:25px 15px}
+:root{--bg:#0b1118;--panel:#131e28;--border:#293945;--green:#a5e65a;--muted:#8798a3}
+body{background:var(--bg);color:#edf2f5;font-family:Arial,sans-serif;min-height:100vh}
+header{height:65px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;background:#101922;border-bottom:1px solid var(--border)}
+.logo{font-size:20px;font-weight:900;letter-spacing:2px}.logo span{color:var(--green)}
+.tag{font-size:10px;color:var(--green);letter-spacing:2px}
+main{max-width:1050px;margin:auto;padding:18px}
 .hidden{display:none!important}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:14px}
-h2{font-size:18px;margin-bottom:9px}
-h3{font-size:13px;margin-bottom:12px;color:#c9d5da}
-p{font-size:13px;color:var(--muted);line-height:1.6}
-button{border:0;border-radius:5px;padding:13px 17px;background:var(--green);color:#10190a;font-weight:900;font-size:12px;letter-spacing:1px;cursor:pointer}
-button:disabled{opacity:.4;cursor:not-allowed}
-button.secondary{background:#263641;color:var(--text)}
-button.danger{background:#9f4141;color:white}
-button.full{width:100%}
-textarea{width:100%;padding:12px;background:#090f14;color:white;border:1px solid var(--border);border-radius:5px;margin:10px 0;font:13px Arial;outline:none;height:100px;resize:vertical}
-textarea:focus{border-color:var(--green)}
-.hero{min-height:65vh;display:flex;align-items:center;justify-content:center;text-align:center}
-.hero-inner{width:100%;max-width:420px}
-.hero-tag{font-size:10px;color:var(--green);letter-spacing:4px;margin-bottom:18px}
-.hero h1{font-size:36px;letter-spacing:2px;margin-bottom:12px}
-.hero h1 span{color:var(--green)}
-.hero p{margin:0 auto 25px;max-width:300px}
-.create-btn{width:100%;padding:18px;font-size:14px;box-shadow:0 0 25px #a5e65a18}
-.small-note{font-size:10px;color:#61717b;margin-top:15px}
-.room-code{padding:13px;background:#090f14;border:1px dashed #43534c;color:var(--green);font-size:11px;overflow-wrap:anywhere;margin:12px 0;border-radius:5px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-#game{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:15px}
-#board{display:grid;grid-template-columns:repeat(8,1fr);width:100%;aspect-ratio:1;border:3px solid #34434b;overflow:hidden;border-radius:4px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:15px}
+.card{background:var(--panel);border:1px solid var(--border);padding:15px;border-radius:7px;margin-bottom:12px}
+h2{font-size:16px;margin-bottom:10px}
+h3{font-size:12px;color:#c9d4da;margin-bottom:12px}
+p{font-size:12px;color:var(--muted);line-height:1.6}
+button{border:0;background:var(--green);color:#11190b;font-weight:900;padding:13px;border-radius:5px;cursor:pointer;font-size:11px;letter-spacing:1px}
+button.secondary{background:#293945;color:white}
+button.danger{background:#a04444;color:white}
+button:disabled{opacity:.5}
+.full{width:100%}
+#board{width:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);border:3px solid #34434b}
 .square{aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;user-select:none}
-.light{background:#d9dfc9}
-.dark{background:#718b70}
-.square.selected{background:#c4bd55}
-.square.target:after{content:"";width:23%;height:23%;border-radius:50%;background:#243e2c;opacity:.8}
-.square.capture:after{content:"";position:absolute;inset:3px;border:5px solid #314d36;border-radius:50%;opacity:.8}
+.light{background:#dce2ce}.dark{background:#718b70}
+.square.selected{background:#c6bd56}
+.square.target:after{content:"";width:23%;height:23%;border-radius:50%;background:#263c2c;opacity:.8}
+.square.capture:after{content:"";position:absolute;inset:3px;border:5px solid #304d36;border-radius:50%}
 .piece{font-family:"DejaVu Sans","Segoe UI Symbol",serif;font-size:clamp(25px,8vw,58px);line-height:1;z-index:1;pointer-events:none}
-.white-piece{color:#fff;text-shadow:0 2px 3px #222}
+.white-piece{color:white;text-shadow:0 2px 3px #333}
 .black-piece{color:#171717;text-shadow:0 1px 1px white}
 .coord{position:absolute;bottom:2px;right:3px;font-size:9px;opacity:.7}
-.light .coord{color:#52654e}
-.dark .coord{color:white}
-.player{padding:12px;background:var(--panel2);border:1px solid var(--border);border-radius:5px;margin:9px 0;font-size:12px;display:flex;justify-content:space-between}
+.light .coord{color:#52654e}.dark .coord{color:white}
+.player{display:flex;justify-content:space-between;padding:12px;background:#1a2933;margin:8px 0;border:1px solid var(--border);border-radius:5px;font-size:12px}
 .player.active{border-color:var(--green)}
-#history{max-height:230px;overflow:auto;font-size:12px;line-height:2}
-.move{display:grid;grid-template-columns:35px 1fr 1fr;border-bottom:1px solid var(--border);padding:3px}
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#263641;padding:13px 18px;border:1px solid #43534c;border-radius:5px;display:none;font-size:12px;max-width:90%;z-index:10}
-@media(max-width:700px){#game{grid-template-columns:1fr}main{padding:15px 10px}.hero h1{font-size:30px}}
+.clock{font-size:22px;font-weight:900;font-variant-numeric:tabular-nums}
+#history{max-height:210px;overflow:auto;font-size:12px;line-height:2}
+.move{display:grid;grid-template-columns:35px 1fr 1fr;border-bottom:1px solid var(--border)}
+.actions{display:flex;gap:7px;flex-wrap:wrap}.actions button{flex:1}
+.modal{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:15px;z-index:5}
+.modal-box{width:100%;max-width:420px;background:#121e28;border:1px solid #394b56;border-radius:9px;padding:22px;box-shadow:0 20px 70px #0009}
+.modal-title{font-size:22px;font-weight:900;letter-spacing:2px;margin-bottom:5px}
+.modal-sub{margin-bottom:22px}
+.options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 22px}
+.option{padding:13px 5px;text-align:center;background:#24333d;color:white;border:1px solid #344550;border-radius:5px;font-size:12px;cursor:pointer}
+.option.active{background:var(--green);color:#11190b;border-color:var(--green);font-weight:900}
+.colors{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 22px}
+.color-option{padding:17px;text-align:center;background:#24333d;border:1px solid #344550;border-radius:5px;cursor:pointer;font-weight:900}
+.color-option.active{border:2px solid var(--green);color:var(--green)}
+input,textarea{width:100%;background:#091119;color:white;border:1px solid var(--border);border-radius:5px;padding:12px;font-size:12px;margin:9px 0}
+textarea{height:85px;resize:vertical}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#263945;padding:13px 18px;border-radius:5px;display:none;font-size:12px;z-index:10;max-width:90%}
+@media(max-width:700px){.layout{grid-template-columns:1fr}main{padding:12px}.modal-box{padding:18px}}
 </style>
 </head>
 <body>
 <header>
  <div class="logo">VINNX<span>MATE</span></div>
- <div class="online">P2P SYSTEM / ONLINE</div>
+ <div class="tag">ONLINE CHESS</div>
 </header>
 
 <main>
-<section id="home" class="hero">
- <div class="hero-inner">
-  <div class="hero-tag">ONLINE CHESS PLATFORM</div>
-  <h1>VINNX<span>MATE</span></h1>
-  <p>Create a private room and challenge your friend in a real-time chess match.</p>
-  <button class="create-btn" id="create-button" onclick="createRoom()">CREATE ROOM</button>
-  <div class="small-note">DIRECT PEER-TO-PEER CONNECTION</div>
-  <p id="status"></p>
- </div>
-</section>
-
-<section id="host-room" class="hidden">
- <div class="card">
-  <h2>ROOM CREATED</h2>
-  <p>Your room is ready. Share the invitation link with your friend.</p>
-  <div class="room-code" id="invite-preview">Generating invitation...</div>
-  <button class="full" onclick="copyInvite()">COPY INVITATION LINK</button>
-  <p id="host-status">Waiting for your friend...</p>
- </div>
- <div class="card">
-  <h3>FRIEND'S ANSWER LINK</h3>
-  <p>Ask your friend to send back their Answer link. Paste it here.</p>
-  <textarea id="answer-link" placeholder="Paste your friend's Answer link here..."></textarea>
-  <button class="full" onclick="connectAnswer()">CONNECT TO FRIEND</button>
- </div>
-</section>
-
-<section id="join-room" class="hidden">
- <div class="card">
-  <h2>JOIN ROOM</h2>
-  <p>Invitation detected. VINNXMATE is preparing your connection.</p>
-  <p id="join-status">Preparing connection...</p>
-  <textarea id="answer-output" readonly placeholder="Your Answer link will appear here..."></textarea>
-  <button class="full" onclick="copyAnswerLink()">COPY ANSWER LINK</button>
- </div>
-</section>
-
-<section id="game" class="hidden">
- <div>
-  <div class="card">
-   <h2>CHESS MATCH</h2>
-   <p id="connection-label">Peer-to-peer connection</p>
-   <p id="game-status">Waiting...</p>
-  </div>
-  <div class="player" id="black-player"><span>BLACK PLAYER</span><b id="black-label">Opponent</b></div>
-  <div id="board"></div>
-  <div class="player" id="white-player"><span>WHITE PLAYER</span><b id="white-label">You</b></div>
- </div>
- <aside>
-  <div class="card">
-   <h3>YOUR COLOR</h3>
-   <h2 id="my-color">WHITE</h2>
-   <p id="turn-label">Waiting...</p>
-  </div>
-  <div class="card">
-   <h3>MOVE HISTORY</h3>
-   <div id="history">No moves yet.</div>
-  </div>
-  <div class="card">
-   <h3>GAME CONTROLS</h3>
-   <div class="actions">
-    <button class="secondary" onclick="flipBoard()">FLIP BOARD</button>
-    <button class="danger" onclick="resign()">RESIGN</button>
-    <button class="secondary" onclick="restartGame()">RESTART</button>
-    <button class="secondary" onclick="leaveGame()">LEAVE</button>
+ <section class="layout">
+  <div>
+   <div class="card">
+    <h2>CHESS MATCH</h2>
+    <p id="connection">Waiting for setup...</p>
+   </div>
+   <div class="player" id="black-player">
+    <span>BLACK</span>
+    <span class="clock" id="black-clock">05:00</span>
+   </div>
+   <div id="board"></div>
+   <div class="player" id="white-player">
+    <span>WHITE</span>
+    <span class="clock" id="white-clock">05:00</span>
    </div>
   </div>
- </aside>
-</section>
+
+  <aside>
+   <div class="card">
+    <h3>GAME STATUS</h3>
+    <h2 id="game-status">Not started</h2>
+    <p id="turn-status">Configure your game first.</p>
+   </div>
+   <div class="card">
+    <h3>YOUR PLAYER</h3>
+    <h2 id="my-color">—</h2>
+    <p id="time-label">Time control: —</p>
+   </div>
+   <div class="card">
+    <h3>MOVE HISTORY</h3>
+    <div id="history">No moves yet.</div>
+   </div>
+   <div class="card">
+    <h3>CONTROLS</h3>
+    <div class="actions">
+     <button class="secondary" onclick="flipBoard()">FLIP</button>
+     <button class="danger" onclick="resign()">RESIGN</button>
+     <button class="secondary" onclick="restartGame()">RESTART</button>
+    </div>
+   </div>
+   <div class="card">
+    <h3>ROOM INVITATION</h3>
+    <p id="room-status">No room created.</p>
+    <button class="full" onclick="copyInvite()">COPY INVITE LINK</button>
+   </div>
+  </aside>
+ </section>
 </main>
+
+<div class="modal" id="settings-modal">
+ <div class="modal-box">
+  <div class="tag">VINNXMATE / CONFIGURATION</div>
+  <div class="modal-title">GAME SETTINGS</div>
+  <p class="modal-sub">Configure your match before playing.</p>
+
+  <h3>SET TIME</h3>
+  <div class="options" id="time-options">
+   <div class="option" data-time="1">1 MIN</div>
+   <div class="option" data-time="3">3 MIN</div>
+   <div class="option active" data-time="5">5 MIN</div>
+   <div class="option" data-time="10">10 MIN</div>
+   <div class="option" data-time="15">15 MIN</div>
+   <div class="option" data-time="30">30 MIN</div>
+  </div>
+
+  <h3>WHERE YOU?</h3>
+  <div class="colors">
+   <div class="color-option active" data-color="white">WHITE</div>
+   <div class="color-option" data-color="black">BLACK</div>
+  </div>
+
+  <button class="full" id="confirm-button" onclick="confirmSettings()">CONFIRM SETTINGS</button>
+  <p style="margin-top:12px">Your invitation link will be copied automatically.</p>
+ </div>
+</div>
+
+<div class="modal hidden" id="answer-modal">
+ <div class="modal-box">
+  <div class="tag">VINNXMATE / CONNECTION</div>
+  <div class="modal-title">JOIN MATCH</div>
+  <p>Preparing your connection to the host.</p>
+  <textarea id="answer-output" readonly placeholder="Generating answer..."></textarea>
+  <button class="full" onclick="copyAnswer()">COPY ANSWER LINK</button>
+  <p id="answer-status" style="margin-top:12px">Please wait...</p>
+ </div>
+</div>
 <div id="toast"></div>
 
 <script>
 "use strict";
 
+const $=id=>document.getElementById(id);
 const rtcConfig={
  iceServers:[
   {urls:"stun:stun.l.google.com:19302"},
@@ -149,146 +165,131 @@ const rtcConfig={
  ]
 };
 
-let pc=null,channel=null,role=null,connected=false;
-let chess=new Chess(),selected=null,targets=[],flipped=false,gameFinished=false;
-let inviteLink="",answerLink="";
-const $=id=>document.getElementById(id);
+let selectedTime=5,selectedColor="white";
+let role=null,pc=null,channel=null,inviteLink="",answerLink="";
+let chess=new Chess(),selected=null,targets=[],flipped=false;
+let connected=false,gameFinished=false;
+let remaining={w:300,b:300},clockTimer=null,lastClock=0;
+let gameStarted=false;
 
-function toast(message){
- const el=$("toast");
- el.textContent=message;
- el.style.display="block";
+document.querySelectorAll("[data-time]").forEach(el=>{
+ el.onclick=()=>{
+  document.querySelectorAll("[data-time]").forEach(x=>x.classList.remove("active"));
+  el.classList.add("active");
+  selectedTime=Number(el.dataset.time);
+ };
+});
+
+document.querySelectorAll("[data-color]").forEach(el=>{
+ el.onclick=()=>{
+  document.querySelectorAll("[data-color]").forEach(x=>x.classList.remove("active"));
+  el.classList.add("active");
+  selectedColor=el.dataset.color;
+ };
+});
+
+function toast(msg){
+ const el=$("toast");el.textContent=msg;el.style.display="block";
  clearTimeout(window.toastTimer);
  window.toastTimer=setTimeout(()=>el.style.display="none",3000);
 }
 
-function showPage(page){
- ["home","host-room","join-room","game"].forEach(id=>{
-  $(id).classList.toggle("hidden",id!==page);
- });
-}
-
-function encodeData(value){
- const bytes=new TextEncoder().encode(value);
+function encodeData(str){
+ const bytes=new TextEncoder().encode(str);
  let binary="";
  bytes.forEach(b=>binary+=String.fromCharCode(b));
  return btoa(binary).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
 }
-
-function decodeData(value){
- const base=value.replace(/-/g,"+").replace(/_/g,"/");
- const binary=atob(base);
- const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));
- return new TextDecoder().decode(bytes);
+function decodeData(str){
+ str=str.replace(/-/g,"+").replace(/_/g,"/");
+ const binary=atob(str);
+ return new TextDecoder().decode(Uint8Array.from(binary,c=>c.charCodeAt(0)));
 }
-
 function makeLink(type,sdp){
  return location.origin+location.pathname+"#"+type+"="+encodeData(sdp);
 }
-
-async function copyValue(value){
- try{
-  await navigator.clipboard.writeText(value);
-  return true;
- }catch(e){
-  const area=document.createElement("textarea");
-  area.value=value;
-  area.style.position="fixed";
-  area.style.opacity="0";
-  document.body.appendChild(area);
-  area.select();
-  let ok=false;
-  try{ok=document.execCommand("copy")}catch(err){}
-  area.remove();
-  return ok;
+async function copyText(text){
+ try{await navigator.clipboard.writeText(text);return true}
+ catch(e){
+  const a=document.createElement("textarea");a.value=text;
+  a.style.position="fixed";a.style.opacity="0";
+  document.body.appendChild(a);a.select();
+  let ok=false;try{ok=document.execCommand("copy")}catch(err){}
+  a.remove();return ok;
  }
 }
 
-/* FIXED ICE GATHERING */
 function waitICE(connection){
  return new Promise(resolve=>{
-  if(connection.iceGatheringState==="complete"){
-   resolve();
-   return;
-  }
-  let finished=false;
-  let timeout;
-
+  if(connection.iceGatheringState==="complete"){resolve();return}
+  let finished=false,timeout;
   function cleanup(){
    clearTimeout(timeout);
    connection.removeEventListener("icegatheringstatechange",check);
   }
   function finish(){
    if(finished)return;
-   finished=true;
-   cleanup();
-   resolve();
+   finished=true;cleanup();resolve();
   }
   function check(){
    if(connection.iceGatheringState==="complete")finish();
   }
-
   timeout=setTimeout(()=>{
-   console.warn("ICE gathering timed out; continuing with gathered candidates.");
+   console.warn("ICE gathering timeout; using gathered candidates");
    finish();
   },60000);
-
   connection.addEventListener("icegatheringstatechange",check);
  });
+
 }
 
-function setupConnection(){
+function setupPeer(){
  pc=new RTCPeerConnection(rtcConfig);
  pc.onconnectionstatechange=()=>{
   if(!pc)return;
-  const state=pc.connectionState;
-  $("connection-label").textContent="Connection: "+state;
-  if(state==="connected"){
+  $("connection").textContent="Connection: "+pc.connectionState;
+  if(pc.connectionState==="connected"){
    connected=true;
-   toast("Friend connected!");
-   showGame();
+   $("room-status").textContent="Connected to opponent.";
+   toast("Opponent connected");
+   startClock();
   }
-  if(state==="failed"||state==="disconnected")toast("Connection interrupted");
+  if(pc.connectionState==="failed")toast("Connection failed. TURN may be required.");
  };
- pc.oniceconnectionstatechange=()=>{
-  if(pc&&pc.iceConnectionState==="failed")toast("P2P failed. A TURN server may be needed.");
- };
- pc.ondatachannel=event=>setupChannel(event.channel);
+ pc.ondatachannel=e=>setupChannel(e.channel);
 }
-
 function setupChannel(ch){
  channel=ch;
  channel.onopen=()=>{
   connected=true;
-  toast("Online match ready");
-  showGame();
+  $("connection").textContent="Connected / P2P";
+  $("room-status").textContent="Opponent connected.";
+  toast("Match connected");
+  startClock();
  };
  channel.onclose=()=>{
   connected=false;
-  toast("Friend disconnected");
+  $("connection").textContent="Opponent disconnected";
  };
- channel.onmessage=event=>{
-  try{receiveMessage(JSON.parse(event.data))}
-  catch(e){console.error(e)}
+ channel.onmessage=e=>{
+  try{receive(JSON.parse(e.data))}catch(err){console.error(err)}
  };
 }
-
 function send(data){
- if(!channel||channel.readyState!=="open"){
-  toast("Connection is not ready");
-  return false;
- }
- channel.send(JSON.stringify(data));
- return true;
+ if(!channel||channel.readyState!=="open")return false;
+ channel.send(JSON.stringify(data));return true;
 }
 
-/* CREATE ROOM */
-async function createRoom(){
+async function confirmSettings(){
+ if(typeof Chess==="undefined")return toast("Chess library not loaded");
+ $("confirm-button").disabled=true;
+ $("confirm-button").textContent="CREATING MATCH...";
  try{
-  $("create-button").disabled=true;
-  $("create-button").textContent="CREATING ROOM...";
-  role="white";
-  setupConnection();
+  remaining={w:selectedTime*60,b:selectedTime*60};
+  $("time-label").textContent="Time control: "+selectedTime+" minutes";
+  role=selectedColor;
+  $("my-color").textContent=role.toUpperCase();
+  setupPeer();
   channel=pc.createDataChannel("vinnxmate-chess");
   setupChannel(channel);
 
@@ -297,106 +298,87 @@ async function createRoom(){
   await waitICE(pc);
 
   inviteLink=makeLink("join",pc.localDescription.sdp);
-  $("invite-preview").textContent=inviteLink;
-  showPage("host-room");
-
-  const copied=await copyValue(inviteLink);
-  $("host-status").textContent=copied
-   ?"Invitation link copied. Send it to your friend."
-   :"Room created. Copy the invitation link below.";
-  toast(copied?"INVITATION LINK COPIED":"Room created");
+  $("room-status").textContent="Invitation link created.";
+  $("settings-modal").classList.add("hidden");
+  render();
+  updateClocks();
+  const copied=await copyText(inviteLink);
+  toast(copied?"Invitation link copied":"Room created. Copy invite link.");
  }catch(e){
   toast("Error: "+e.message);
-  $("create-button").disabled=false;
-  $("create-button").textContent="CREATE ROOM";
+  $("confirm-button").disabled=false;
+  $("confirm-button").textContent="CONFIRM SETTINGS";
  }
 }
 
-/* JOIN ROOM */
 async function joinRoom(sdp){
  try{
-  showPage("join-room");
-  $("join-status").textContent="Connecting to host...";
-  role="black";
-  setupConnection();
-
+  role=selectedColor==="white"?"black":"white";
+  selectedTime=Number(sessionStorage.getItem("vinnx_join_time")||5);
+  remaining={w:selectedTime*60,b:selectedTime*60};
+  $("time-label").textContent="Time control: "+selectedTime+" minutes";
+  $("my-color").textContent=role.toUpperCase();
+  setupPeer();
   await pc.setRemoteDescription({type:"offer",sdp});
   const answer=await pc.createAnswer();
   await pc.setLocalDescription(answer);
   await waitICE(pc);
-
   answerLink=makeLink("answer",pc.localDescription.sdp);
   $("answer-output").value=answerLink;
-  const copied=await copyValue(answerLink);
-
-  $("join-status").textContent=copied
-   ?"Answer link copied. Send it back to the host."
-   :"Answer created. Copy the Answer link below.";
-  toast(copied?"ANSWER LINK COPIED":"Answer ready");
+  $("settings-modal").classList.add("hidden");
+  $("answer-modal").classList.remove("hidden");
+  const copied=await copyText(answerLink);
+  $("answer-status").textContent=copied?
+   "Answer link copied. Send it to the host.":
+   "Copy the Answer link and send it to the host.";
  }catch(e){
-  $("join-status").textContent="Error: "+e.message;
+  $("answer-status").textContent="Connection error: "+e.message;
  }
+}
+
+async function copyAnswer(){
+ if(!answerLink)return;
+ toast(await copyText(answerLink)?"Answer copied":"Copy failed");
 }
 
 async function copyInvite(){
- if(!inviteLink)return toast("Invitation not ready");
- toast(await copyValue(inviteLink)?"Invitation copied":"Copy failed");
+ if(!inviteLink)return toast("No invitation link yet");
+ toast(await copyText(inviteLink)?"Invitation copied":"Copy failed");
 }
 
-async function copyAnswerLink(){
- if(!answerLink)return toast("Answer not ready");
- toast(await copyValue(answerLink)?"Answer link copied":"Copy failed");
+async function connectAnswer(sdp){
+ if(!pc||role===null)return;
+ await pc.setRemoteDescription({type:"answer",sdp});
+ $("room-status").textContent="Connecting to opponent...";
 }
 
-/* HOST APPLY ANSWER */
-async function connectAnswer(){
- try{
-  if(!pc||role!=="white")return toast("Create a room first");
-  const raw=$("answer-link").value.trim();
-  if(!raw)return toast("Paste Answer link first");
-
-  let sdp=raw;
-  if(raw.includes("#answer=")){
-   sdp=decodeData(raw.split("#answer=")[1].split("&")[0]);
-  }
-  if(!sdp.includes("v=0"))return toast("Invalid Answer link");
-
-  await pc.setRemoteDescription({type:"answer",sdp});
-  $("host-status").textContent="Answer received. Connecting...";
-  toast("Connecting to friend");
- }catch(e){
-  toast("Error: "+e.message);
+async function checkLink(){
+ const hash=location.hash;
+ if(hash.startsWith("#join=")){
+  try{
+   const sdp=decodeData(hash.slice(6).split("&")[0]);
+   history.replaceState(null,"",location.pathname);
+   await joinRoom(sdp);
+  }catch(e){toast("Invalid invitation link")}
  }
 }
 
-/* CHESS */
 const glyph={
  wK:"♔",wQ:"♕",wR:"♖",wB:"♗",wN:"♘",wP:"♙",
- bK:"♚",bQ:"♛",bR:"♜",bB:"♝",bN:"♞",bP:"♟"
+ bK:"♚",bQ:"♛",bR:"♜",bN:"♞",bB:"♝",bP:"♟"
 };
 
-function showGame(){
- showPage("game");
- $("my-color").textContent=role.toUpperCase();
- $("white-label").textContent=role==="white"?"You":"Opponent";
- $("black-label").textContent=role==="black"?"You":"Opponent";
- render();
-}
-
 function render(){
- const board=$("board");
- board.innerHTML="";
+ const board=$("board");board.innerHTML="";
  const matrix=chess.board();
-
  for(let row=0;row<8;row++){
   for(let col=0;col<8;col++){
    const r=flipped?7-row:row,c=flipped?7-col:col;
    const square="abcdefgh"[c]+(8-r),piece=matrix[r][c];
    const div=document.createElement("div");
    div.className="square "+((r+c)%2===0?"light":"dark");
-   if(selected===square)div.classList.add("selected");
+   if(square===selected)div.classList.add("selected");
    if(targets.includes(square))div.classList.add(piece?"capture":"target");
-
    if(piece){
     const span=document.createElement("span");
     span.className="piece "+(piece.color==="w"?"white-piece":"black-piece");
@@ -420,139 +402,129 @@ function render(){
 
 function clickSquare(square){
  if(!connected||gameFinished)return;
- const myTurn=role==="white"?"w":"b";
- if(chess.turn()!==myTurn)return toast("Wait for your turn");
+ if(chess.turn()!==(role==="white"?"w":"b"))return toast("Wait for your turn");
  const piece=chess.get(square);
-
  if(selected&&targets.includes(square)){makeMove(selected,square);return}
- if(piece&&piece.color===myTurn){
+ if(piece&&piece.color===(role==="white"?"w":"b")){
   selected=square;
   targets=chess.moves({square,verbose:true}).map(m=>m.to);
-  render();return;
- }
- selected=null;targets=[];render();
+ }else{selected=null;targets=[]}
+ render();
 }
 
 function makeMove(from,to){
  const piece=chess.get(from),move={from,to};
  if(piece&&piece.type==="p"&&(to[1]==="8"||to[1]==="1")){
-  const choice=prompt("Promote: q, r, b, n","q");
+  const choice=prompt("Promote to: q, r, b, n","q");
   if(choice===null)return;
-  if(!["q","r","b","n"].includes(choice.toLowerCase()))return toast("Invalid promotion");
+  if(!["q","r","b","n"].includes(choice.toLowerCase()))return;
   move.promotion=choice.toLowerCase();
  }
  const result=chess.move(move);
- if(!result)return toast("Illegal move");
+ if(!result)return;
+ if(!send({type:"move",san:result.san})){
+  chess.undo();return toast("Opponent is not connected");
+ }
  selected=null;targets=[];
- if(!send({type:"move",san:result.san})){chess.undo();render();return}
- checkFinished();render();
+ checkEnd();render();
 }
 
-function receiveMessage(data){
- if(!data||typeof data.type!=="string")return;
+function receive(data){
  if(data.type==="move"){
-  if(gameFinished)return;
-  const opponentTurn=role==="white"?"b":"w";
-  if(chess.turn()!==opponentTurn)return;
-  const move=chess.move(data.san);
-  if(!move)return;
-  selected=null;targets=[];checkFinished();render();
+  const expected=role==="white"?"b":"w";
+  if(chess.turn()!==expected)return;
+  if(!chess.move(data.san))return;
+  checkEnd();render();
  }
  if(data.type==="resign"){
-  gameFinished=true;toast("Opponent resigned. You win!");updateStatus();
+  gameFinished=true;stopClock();$("game-status").textContent="Opponent resigned — You win!";
+  updateStatus();
  }
  if(data.type==="restart"){
-  chess.reset();gameFinished=false;selected=null;targets=[];render();toast("New game started");
+  chess.reset();gameFinished=false;
+  remaining={w:selectedTime*60,b:selectedTime*60};
+  stopClock();updateClocks();render();
+  toast("New game started");
+ }
+ if(data.type==="clock"){
+  remaining=data.remaining;
+  updateClocks();
  }
 }
 
-function checkFinished(){
+function checkEnd(){
  if(chess.game_over()){
-  gameFinished=true;
-  toast(chess.in_checkmate()?"Checkmate!":"Game drawn");
+  gameFinished=true;stopClock();
+  $("game-status").textContent=chess.in_checkmate()?"CHECKMATE":"DRAW";
  }
 }
 
 function updateStatus(){
- const status=$("game-status"),turn=$("turn-label");
- if(gameFinished){
-  status.textContent=chess.in_checkmate()?"Checkmate!":"Game finished";
-  turn.textContent="Match ended";
- }else{
-  const current=chess.turn()==="w"?"White":"Black";
-  status.textContent=current+" to move"+(chess.in_check()?" — CHECK!":"");
-  turn.textContent=chess.turn()===(role==="white"?"w":"b")?"Your turn":"Opponent's turn";
- }
-
+ $("turn-status").textContent=gameFinished?"Game ended":
+  (chess.turn()==="w"?"White":"Black")+" to move";
+ $("game-status").textContent=gameFinished?"Finished":
+  chess.in_check()?"CHECK!":"In progress";
  $("white-player").classList.toggle("active",!gameFinished&&chess.turn()==="w");
  $("black-player").classList.toggle("active",!gameFinished&&chess.turn()==="b");
-
- const history=chess.history(),container=$("history");
- container.innerHTML="";
- if(!history.length){container.textContent="No moves yet."}
- else{
-  for(let i=0;i<history.length;i+=2){
-   const row=document.createElement("div");row.className="move";
-   [String(i/2+1)+".",history[i]||"",history[i+1]||""].forEach(value=>{
-    const span=document.createElement("span");span.textContent=value;row.appendChild(span);
-   });
-   container.appendChild(row);
-  }
+ const history=chess.history(),el=$("history");el.innerHTML="";
+ if(!history.length){el.textContent="No moves yet";return}
+ for(let i=0;i<history.length;i+=2){
+  const row=document.createElement("div");row.className="move";
+  [String(i/2+1)+".",history[i]||"",history[i+1]||""].forEach(v=>{
+   const span=document.createElement("span");span.textContent=v;row.appendChild(span);
+  });
+  el.appendChild(row);
  }
 }
+
+function formatClock(seconds){
+ seconds=Math.max(0,Math.floor(seconds));
+ return String(Math.floor(seconds/60)).padStart(2,"0")+":"+
+ String(seconds%60).padStart(2,"0");
+}
+function updateClocks(){
+ $("white-clock").textContent=formatClock(remaining.w);
+ $("black-clock").textContent=formatClock(remaining.b);
+}
+function startClock(){
+ if(clockTimer||gameFinished)return;
+ lastClock=Date.now();
+ clockTimer=setInterval(()=>{
+  if(!connected||gameFinished)return;
+  const now=Date.now(),elapsed=(now-lastClock)/1000;lastClock=now;
+  const side=chess.turn();
+  remaining[side]=Math.max(0,remaining[side]-elapsed);
+  updateClocks();
+  if(remaining[side]<=0){
+   gameFinished=true;stopClock();
+   $("game-status").textContent=(side==="w"?"WHITE":"BLACK")+" TIME OUT";
+   send({type:"timeout",side});
+  }
+ },250);
+}
+function stopClock(){clearInterval(clockTimer);clockTimer=null}
 
 function flipBoard(){flipped=!flipped;render()}
 
 function resign(){
  if(!connected||gameFinished)return;
- if(!confirm("Are you sure you want to resign?"))return;
- send({type:"resign"});gameFinished=true;updateStatus();
+ if(!confirm("Resign this match?"))return;
+ send({type:"resign"});gameFinished=true;stopClock();updateStatus();
 }
-
 function restartGame(){
  if(!connected)return;
- if(role!=="white")return toast("Only the host can restart");
- if(!confirm("Restart the match?"))return;
- chess.reset();gameFinished=false;selected=null;targets=[];
- send({type:"restart"});render();
+ if(!confirm("Restart the game?"))return;
+ chess.reset();gameFinished=false;
+ remaining={w:selectedTime*60,b:selectedTime*60};
+ stopClock();startClock();send({type:"restart"});render();updateClocks();
 }
-
-function leaveGame(){
- if(channel)channel.close();
- if(pc)pc.close();
- pc=null;channel=null;connected=false;role=null;
- chess.reset();selected=null;targets=[];gameFinished=false;flipped=false;
- inviteLink="";answerLink="";
- $("answer-link").value="";$("answer-output").value="";
- $("create-button").disabled=false;
- $("create-button").textContent="CREATE ROOM";
- showPage("home");
-}
-
-/* READ INVITATION */
-async function checkRoomLink(){
- const hash=location.hash;
- if(hash.startsWith("#join=")){
-  try{
-   const sdp=decodeData(hash.slice(6));
-   history.replaceState(null,"",location.pathname);
-   await joinRoom(sdp);
-  }catch(e){
-   showPage("home");toast("Invalid invitation link");
-  }
- }else if(hash.startsWith("#answer=")){
-  showPage("home");
-  toast("Open the host room and paste this Answer link.");
- }
-}
-
-window.addEventListener("beforeunload",()=>{if(pc)pc.close()});
 
 if(typeof Chess==="undefined"){
- $("status").textContent="Chess library failed to load. Check your internet.";
- $("create-button").disabled=true;
+ $("connection").textContent="Chess library could not load. Check your internet.";
+ $("confirm-button").disabled=true;
 }else{
- checkRoomLink();
+ render();
+ checkLink();
 }
 </script>
 </body>
